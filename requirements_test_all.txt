@@ -1167,6 +1167,9 @@ openerz-api==0.3.0
 # homeassistant.components.openhome
 openhomedevice==2.2.0
 
+# homeassistant.components.openly
+openly-core==0.1.0
+
 # homeassistant.components.opower
 opower==0.3.0
 
