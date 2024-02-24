@@ -27,7 +27,7 @@ class CloudCoordinator(DataUpdateCoordinator):
             # Name of the data. For logging purposes.
             name="Rently Hubs",
             # Polling interval. Will only be polled if there are subscribers.
-            update_interval=timedelta(seconds=30),
+            update_interval=timedelta(seconds=900),
         )
         self.cloud = cloud
         self.hubs: list[HubEntity] = []
