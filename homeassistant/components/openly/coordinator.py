@@ -4,7 +4,6 @@ from datetime import timedelta
 import logging
 
 from openly.cloud import RentlyCloud
-from openly.devices import Lock
 from openly.exceptions import InvalidResponseError, RentlyAuthError
 
 from homeassistant.core import HomeAssistant
@@ -43,29 +42,7 @@ class CloudCoordinator(DataUpdateCoordinator):
         try:
             async with asyncio.timeout(10):
                 # Get list of hubs
-                lock_devices = []
-                hub_devices = await self.hass.async_add_executor_job(
-                    self.cloud.get_hubs
-                )
-                for hub in hub_devices:
-                    # Get list of devices
-                    devices_data = await self.hass.async_add_executor_job(
-                        self.coordinator.cloud.get_devices, hub.id
-                    )
-
-                    for device in devices_data:
-                        if isinstance(device, Lock):
-                            lock_devices.append(device)
-
-                # Create HubCoordinator for each hub
-                self.hubs = [
-                    HubEntity(self, hub["id"], hub, self.cloud) for hub in hub_devices
-                ]
-
-                self.locks = [
-                    LockEntity(self, lock["id"], lock, self.cloud)
-                    for lock in lock_devices
-                ]
+                return await self.hass.async_add_executor_job(self.cloud.get_hubs)
         except RentlyAuthError as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)

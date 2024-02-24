@@ -1,6 +1,5 @@
 """Rently Hub Entity."""
 from openly.devices import Hub
-from openly.devices.base_device import BaseDevice
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -18,7 +17,7 @@ async def async_setup_entry(
 ) -> None:
     """Initialize Hub entities from a config entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_entities(coordinator.hubs)
+    async_add_entities(coordinator.hubs, update_before_add=True)
 
 
 class HubEntity(CoordinatorEntity):
@@ -32,21 +31,11 @@ class HubEntity(CoordinatorEntity):
 
     """
 
-    def __init__(self, coordinator: DataUpdateCoordinator, idx: str, hub: Hub) -> None:
+    def __init__(self, coordinator: DataUpdateCoordinator, idx: str) -> None:
         """Pass coordinator to CoordinatorEntity."""
         super().__init__(coordinator, context=idx)
         self.idx: str = idx
-        self._hub: Hub = hub
-        self._devices: list[BaseDevice] = []
-
-    @property
-    def devices(self) -> list[BaseDevice]:
-        """Return list of devices."""
-        return self._devices
-
-    def update_device(self, device: BaseDevice):
-        """Return cloud."""
-        return self.coordinator.cloud.update_device_status(self, device)
+        self._hub: Hub = None
 
     async def async_update(self) -> None:
         """Update the entity.
