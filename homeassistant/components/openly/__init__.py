@@ -22,8 +22,8 @@ async def async_setup_entry(
 ) -> bool:
     """Set up Rently from a config entry."""
     cloud = RentlyCloud(
-        url="https://app2.keyless.rocks/api",
-        login_url="https://remotapp.rently.com/oauth/token",
+        url="https://app2.keyless.rocks/api/",
+        login_url="https://remotapp.rently.com/",
     )
 
     try:
