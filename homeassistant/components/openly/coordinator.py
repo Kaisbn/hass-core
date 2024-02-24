@@ -26,7 +26,7 @@ class CloudCoordinator(DataUpdateCoordinator):
             _LOGGER,
             # Name of the data. For logging purposes.
             name="Rently Hubs",
-            # Polling interval. Will only be polled if there are subscribers.
+            # Polling interval. Hubs are rarely updated. 15 minutes is reasonable.
             update_interval=timedelta(seconds=900),
         )
         self.cloud = cloud

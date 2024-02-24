@@ -3,6 +3,7 @@ from openly.devices import Hub
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
@@ -44,4 +45,14 @@ class HubEntity(CoordinatorEntity):
         """
         self._hub = await self.coordinator.hass.async_add_executor_job(
             self.coordinator.cloud.get_hub, self.idx
+        )
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return the device info."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, self.idx)},
+            name=self._hub.home_name,
+            model=self._hub.status.model,
+            sw_version=self._hub.status.fmVer,
         )

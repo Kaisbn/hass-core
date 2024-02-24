@@ -48,7 +48,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
         raise CannotConnect from err
 
     # Return info that you want to store in the config entry.
-    return {"title": "Rently Cloud"}
+    return {"title": data[CONF_EMAIL]}
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):

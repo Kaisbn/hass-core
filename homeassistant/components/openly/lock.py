@@ -27,7 +27,8 @@ from homeassistant.helpers.update_coordinator import (
 
 from .const import DOMAIN
 
-SCAN_INTERVAL = timedelta(seconds=10)
+# Poll every minute
+SCAN_INTERVAL = timedelta(seconds=60)
 
 
 async def async_setup_entry(
@@ -49,8 +50,6 @@ class LockEntity(CoordinatorEntity, BaseLockEntity):
 
     """
 
-    _attr_has_entity_name = True
-    _attr_name = None
     _lock: Lock = None
 
     def __init__(self, coordinator: DataUpdateCoordinator, idx: str) -> None:
