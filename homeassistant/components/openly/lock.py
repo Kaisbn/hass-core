@@ -2,15 +2,26 @@
 from enum import Enum
 from typing import Any
 
-from openly.devices import Hub
-
 from homeassistant.components.lock import LockEntity as BaseLockEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_BATTERY_LEVEL
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
 )
+
+from .const import DOMAIN
+
+
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+) -> None:
+    """Initialize Hub entities from a config entry."""
+    coordinator = hass.data[DOMAIN][entry.entry_id]
+    async_add_entities(coordinator.locks)
 
 
 class LockStatus(Enum):
@@ -35,11 +46,10 @@ class LockEntity(CoordinatorEntity, BaseLockEntity):
 
     """
 
-    def __init__(self, coordinator: DataUpdateCoordinator, idx, hub: Hub) -> None:
+    def __init__(self, coordinator: DataUpdateCoordinator, idx) -> None:
         """Pass coordinator to CoordinatorEntity."""
         super().__init__(coordinator, context=idx)
         self.idx = idx
-        self._hub = hub
         self._lock = None
         self._lock_status = None
 
@@ -71,7 +81,7 @@ class LockEntity(CoordinatorEntity, BaseLockEntity):
         # Set status
         self._lock.lock()
         # Send update request
-        self._hub.update(self._lock)
+        self.coordinator.cloud.update_device_status(self._lock)
 
         self._lock_status = LockStatus.LOCKING
 

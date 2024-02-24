@@ -2,28 +2,24 @@
 from __future__ import annotations
 
 from openly.cloud import RentlyCloud
-from openly.devices import Lock
 from openly.exceptions import MissingParametersError, RentlyAuthError
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .config_flow import CannotConnect, InvalidAuth
+from .config_flow import API_URL, LOGIN_URL, CannotConnect, InvalidAuth
+from .const import DOMAIN
 from .coordinator import CloudCoordinator
-from .lock import LockEntity
 
 PLATFORMS: list[Platform] = [Platform.LOCK]
 
 
-async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
-) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Rently from a config entry."""
     cloud = RentlyCloud(
-        url="https://app2.keyless.rocks/api/",
-        login_url="https://remotapp.rently.com/",
+        api_url=API_URL,
+        login_url=LOGIN_URL,
     )
 
     try:
@@ -45,13 +41,7 @@ async def async_setup_entry(
     #
     coordinator = CloudCoordinator(hass, cloud)
     await coordinator.async_config_entry_first_refresh()
-
-    for hub in coordinator.data:
-        await hub.async_update()
-
-        for device in hub.devices:
-            if isinstance(device, Lock):
-                async_add_entities([LockEntity(coordinator, device.id, hub)])
-        async_add_entities(hub.devices, update_before_add=True)
+    # Save as config entry data
+    hass.data[DOMAIN][entry.entry_id] = coordinator
 
     return True

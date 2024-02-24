@@ -4,6 +4,7 @@ from datetime import timedelta
 import logging
 
 from openly.cloud import RentlyCloud
+from openly.devices import Lock
 from openly.exceptions import InvalidResponseError, RentlyAuthError
 
 from homeassistant.core import HomeAssistant
@@ -11,6 +12,7 @@ from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .hub import HubEntity
+from .lock import LockEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,6 +31,8 @@ class CloudCoordinator(DataUpdateCoordinator):
             update_interval=timedelta(seconds=30),
         )
         self.cloud = cloud
+        self.hubs: list[HubEntity] = []
+        self.locks: list[LockEntity] = []
 
     async def _async_update_data(self):
         """Fetch data from API endpoint.
@@ -39,14 +43,28 @@ class CloudCoordinator(DataUpdateCoordinator):
         try:
             async with asyncio.timeout(10):
                 # Get list of hubs
-                res = await self.hass.async_add_executor_job(self.cloud.get_hubs)
+                lock_devices = []
+                hub_devices = await self.hass.async_add_executor_job(
+                    self.cloud.get_hubs
+                )
+                for hub in hub_devices:
+                    # Get list of devices
+                    devices_data = await self.hass.async_add_executor_job(
+                        self.coordinator.cloud.get_devices, hub.id
+                    )
 
-                if not hasattr(res, "hubs") or not res["hubs"]:
-                    raise UpdateFailed("No hubs found")
+                    for device in devices_data:
+                        if isinstance(device, Lock):
+                            lock_devices.append(device)
 
                 # Create HubCoordinator for each hub
-                return [
-                    HubEntity(self, hub["id"], hub, self.cloud) for hub in res["hubs"]
+                self.hubs = [
+                    HubEntity(self, hub["id"], hub, self.cloud) for hub in hub_devices
+                ]
+
+                self.locks = [
+                    LockEntity(self, lock["id"], lock, self.cloud)
+                    for lock in lock_devices
                 ]
         except RentlyAuthError as err:
             # Raising ConfigEntryAuthFailed will cancel future updates

@@ -2,10 +2,23 @@
 from openly.devices import Hub
 from openly.devices.base_device import BaseDevice
 
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
 )
+
+from .const import DOMAIN
+
+
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+) -> None:
+    """Initialize Hub entities from a config entry."""
+    coordinator = hass.data[DOMAIN][entry.entry_id]
+    async_add_entities(coordinator.hubs)
 
 
 class HubEntity(CoordinatorEntity):
@@ -42,9 +55,4 @@ class HubEntity(CoordinatorEntity):
         """
         self._hub = await self.coordinator.hass.async_add_executor_job(
             self.coordinator.cloud.get_hub, self.idx
-        )
-
-        # Get list of devices
-        self._devices = await self.hass.async_add_executor_job(
-            self.coordinator.cloud.get_devices, self.idx
         )

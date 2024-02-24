@@ -25,6 +25,9 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
     }
 )
 
+API_URL = "https://app2.keyless.rocks/api/"
+LOGIN_URL = "https://remotapp.rently.com/"
+
 
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str, Any]:
     """Validate the user input allows us to connect.
@@ -32,8 +35,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     Data has the keys from STEP_USER_DATA_SCHEMA with values provided by the user.
     """
     cloud = RentlyCloud(
-        url="https://app2.keyless.rocks/api",
-        login_url="https://remotapp.rently.com/oauth/token",
+        login_url=LOGIN_URL,
     )
 
     try:
