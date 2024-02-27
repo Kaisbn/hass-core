@@ -952,8 +952,6 @@ build.json @home-assistant/supervisor
 /tests/components/opengarage/ @danielhiversen
 /homeassistant/components/openhome/ @bazwilliams
 /tests/components/openhome/ @bazwilliams
-/homeassistant/components/openly/ @Kaisbn
-/tests/components/openly/ @Kaisbn
 /homeassistant/components/opensky/ @joostlek
 /tests/components/opensky/ @joostlek
 /homeassistant/components/opentherm_gw/ @mvn23
@@ -1104,6 +1102,8 @@ build.json @home-assistant/supervisor
 /tests/components/renault/ @epenet
 /homeassistant/components/renson/ @jimmyd-be
 /tests/components/renson/ @jimmyd-be
+/homeassistant/components/rently/ @Kaisbn
+/tests/components/rently/ @Kaisbn
 /homeassistant/components/reolink/ @starkillerOG
 /tests/components/reolink/ @starkillerOG
 /homeassistant/components/repairs/ @home-assistant/core

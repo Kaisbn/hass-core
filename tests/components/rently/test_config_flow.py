@@ -2,8 +2,8 @@
 from unittest.mock import AsyncMock, patch
 
 from homeassistant import config_entries
-from homeassistant.components.openly.config_flow import CannotConnect, InvalidAuth
-from homeassistant.components.openly.const import DOMAIN
+from homeassistant.components.rently.config_flow import CannotConnect, InvalidAuth
+from homeassistant.components.rently.const import DOMAIN
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
@@ -18,7 +18,7 @@ async def test_form(hass: HomeAssistant, mock_setup_entry: AsyncMock) -> None:
     assert result["errors"] == {}
 
     with patch(
-        "homeassistant.components.openly.config_flow.RentlyCloud.login",
+        "homeassistant.components.rently.config_flow.RentlyCloud.login",
         return_value=True,
     ):
         result = await hass.config_entries.flow.async_configure(
@@ -31,7 +31,7 @@ async def test_form(hass: HomeAssistant, mock_setup_entry: AsyncMock) -> None:
         await hass.async_block_till_done()
 
     assert result["type"] == FlowResultType.CREATE_ENTRY
-    assert result["title"] == "Rently Cloud"
+    assert result["title"] == "test-username"
     assert result["data"] == {
         CONF_EMAIL: "test-username",
         CONF_PASSWORD: "test-password",
@@ -48,7 +48,7 @@ async def test_form_invalid_auth(
     )
 
     with patch(
-        "homeassistant.components.openly.config_flow.RentlyCloud.login",
+        "homeassistant.components.rently.config_flow.RentlyCloud.login",
         side_effect=InvalidAuth,
     ):
         result = await hass.config_entries.flow.async_configure(
@@ -66,7 +66,7 @@ async def test_form_invalid_auth(
     # FlowResultType.CREATE_ENTRY or FlowResultType.ABORT so
     # we can show the config flow is able to recover from an error.
     with patch(
-        "homeassistant.components.openly.config_flow.RentlyCloud.login",
+        "homeassistant.components.rently.config_flow.RentlyCloud.login",
         return_value=True,
     ):
         result = await hass.config_entries.flow.async_configure(
@@ -79,7 +79,7 @@ async def test_form_invalid_auth(
         await hass.async_block_till_done()
 
     assert result["type"] == FlowResultType.CREATE_ENTRY
-    assert result["title"] == "Rently Cloud"
+    assert result["title"] == "test-username"
     assert result["data"] == {
         CONF_EMAIL: "test-username",
         CONF_PASSWORD: "test-password",
@@ -96,7 +96,7 @@ async def test_form_cannot_connect(
     )
 
     with patch(
-        "homeassistant.components.openly.config_flow.RentlyCloud.login",
+        "homeassistant.components.rently.config_flow.RentlyCloud.login",
         side_effect=CannotConnect,
     ):
         result = await hass.config_entries.flow.async_configure(
@@ -115,7 +115,7 @@ async def test_form_cannot_connect(
     # we can show the config flow is able to recover from an error.
 
     with patch(
-        "homeassistant.components.openly.config_flow.RentlyCloud.login",
+        "homeassistant.components.rently.config_flow.RentlyCloud.login",
         return_value=True,
     ):
         result = await hass.config_entries.flow.async_configure(
@@ -128,7 +128,7 @@ async def test_form_cannot_connect(
         await hass.async_block_till_done()
 
     assert result["type"] == FlowResultType.CREATE_ENTRY
-    assert result["title"] == "Rently Cloud"
+    assert result["title"] == "test-username"
     assert result["data"] == {
         CONF_EMAIL: "test-username",
         CONF_PASSWORD: "test-password",

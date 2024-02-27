@@ -4208,12 +4208,6 @@
       "config_flow": true,
       "iot_class": "local_polling"
     },
-    "openly": {
-      "name": "Rently",
-      "integration_type": "hub",
-      "config_flow": true,
-      "iot_class": "cloud_polling"
-    },
     "opensensemap": {
       "name": "openSenseMap",
       "integration_type": "hub",
@@ -4907,6 +4901,12 @@
       "integration_type": "hub",
       "config_flow": true,
       "iot_class": "local_polling"
+    },
+    "rently": {
+      "name": "Rently",
+      "integration_type": "hub",
+      "config_flow": true,
+      "iot_class": "cloud_polling"
     },
     "reolink": {
       "name": "Reolink IP NVR/camera",

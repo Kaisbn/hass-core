@@ -1467,7 +1467,7 @@ openevsewifi==1.1.2
 # homeassistant.components.openhome
 openhomedevice==2.2.0
 
-# homeassistant.components.openly
+# homeassistant.components.rently
 openly-core==0.1.0
 
 # homeassistant.components.opensensemap

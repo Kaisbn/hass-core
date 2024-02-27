@@ -50,6 +50,7 @@ class LockEntity(CoordinatorEntity, BaseLockEntity):
 
     """
 
+    _attr_force_update = False
     _lock: Lock = None
 
     def __init__(self, coordinator: DataUpdateCoordinator, idx: str) -> None:
