@@ -44,8 +44,8 @@ class CloudCoordinator(DataUpdateCoordinator):
                     config_entry = self.hass.config_entries.async_entries(DOMAIN)[0]
                     connected = await self.hass.async_add_executor_job(
                         self.cloud.login,
-                        config_entry[CONF_EMAIL],
-                        config_entry[CONF_PASSWORD],
+                        config_entry.data[CONF_EMAIL],
+                        config_entry.data[CONF_PASSWORD],
                     )  # only 1 entry
                     if not connected:
                         raise RentlyAuthError("Could not connect to Rently")
