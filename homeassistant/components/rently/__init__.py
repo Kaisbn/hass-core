@@ -9,7 +9,7 @@ from openly.exceptions import InvalidResponseError, RentlyAuthError
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, Platform
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.typing import ConfigType
@@ -21,22 +21,13 @@ from .coordinator import CloudCoordinator
 from .hub import HubEntity
 from .lock import LockEntity
 
-PLATFORMS: list[Platform] = [Platform.LOCK]
+CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
-CONFIG_SCHEMA: vol.Schema = vol.Schema(
-    {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_EMAIL): str,
-                vol.Required(CONF_PASSWORD): str,
-            }
-        )
-    }
-)
+PLATFORMS: list[Platform] = [Platform.LOCK]
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """Set up the component."""
+    """Set up the Rently component."""
     hass.data.setdefault(DOMAIN, {})
     return True
 

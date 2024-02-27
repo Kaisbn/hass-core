@@ -6,6 +6,7 @@ from typing import Any
 
 from openly.cloud import RentlyCloud
 from openly.exceptions import MissingParametersError, RentlyAuthError
+import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
@@ -13,12 +14,16 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 
-from . import CONFIG_SCHEMA
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-STEP_USER_DATA_SCHEMA = CONFIG_SCHEMA[DOMAIN]
+STEP_USER_DATA_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_EMAIL): str,
+        vol.Required(CONF_PASSWORD): str,
+    }
+)
 
 API_URL = "https://app2.keyless.rocks/api/"
 LOGIN_URL = "https://remotapp.rently.com/"
